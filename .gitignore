@@ -1,0 +1,6 @@
+# ENV files
+*.env
+
+# Composer
+composer.phar
+/vendor/
