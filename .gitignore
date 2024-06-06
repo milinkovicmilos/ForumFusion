@@ -2,5 +2,6 @@
 *.env
 
 # Composer
+composer.lock
 composer.phar
 /vendor/

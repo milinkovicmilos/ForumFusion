@@ -1,5 +1,9 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 function get($key) {
     if (isset($_GET[$key]))
         return $_GET[$key];
@@ -52,4 +56,25 @@ function queryPrepared($query, $params) {
     $prepared = $dbc->prepare($query);
     $prepared->execute($params);
     return $prepared->fetchAll();
+}
+
+function executePrepared($query, $params) : bool { 
+    global $dbc;
+    $prepared = $dbc->prepare($query);
+    $result = $prepared->execute($params);
+    return $result;
+}
+
+function prepareMailer() : PHPMailer {
+    $mail = new PHPMailer(true);
+
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = SMTPUSERNAME;
+    $mail->Password = SMTPPASSWORD;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port = 465;
+
+    return $mail;
 }
