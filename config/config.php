@@ -1,6 +1,7 @@
 <?php
 
 define("BASE_DIR", dirname(__FILE__, 2));
+define("BASE_HOST", "/ForumFusion/");
 
 $envFilePath = BASE_DIR . "/config/.env";
 $envFileRows = file($envFilePath);
