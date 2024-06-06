@@ -11,5 +11,7 @@ if (!validateUsername($username) || !validatePassword($password)) {
     redirect("login");
 }
 
-$log = logIn($username, $password);
-redirect("");
+if (logIn($username, $password)) {
+    redirect("index");
+}
+redirect("login");

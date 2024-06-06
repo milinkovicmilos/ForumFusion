@@ -18,10 +18,10 @@
                             <input type="text" name="email" id="email" placeholder="Email">
                         </div>
                         <div class="input-container">
-                            <input type="text" name="password" id="password" placeholder="Password">
+                            <input type="password" name="password" id="password" placeholder="Password">
                         </div>
                         <div class="input-container">
-                            <input type="text" name="repassword" id="repassword" placeholder="Repeat Password">
+                            <input type="password" name="repassword" id="repassword" placeholder="Repeat Password">
                         </div>
                         <input type="submit" value="Register">
                     </form>
@@ -30,7 +30,7 @@
                     <h2>Log In</h2>
                     <form action="models/users/login.php" method="POST" class="validate">
                         <input type="text" name="username" id="reqUsername" placeholder="Username">
-                        <input type="text" name="password" id="reqPassword" placeholder="Password">
+                        <input type="password" name="password" id="reqPassword" placeholder="Password">
                         <input type="submit" value="Log In">
                     </form>
                 </div>

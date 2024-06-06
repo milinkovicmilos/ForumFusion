@@ -19,11 +19,12 @@ function isPost() {
 function redirect($pageName) {
     $url = BASE_HOST . "/index.php?page=" . $pageName;
     header("Location: $url");
-    http_response_code(302);
+    die;
 }
 
 function isLoggedIn() : bool {
-    return isset($_SERVER["USER"]);
+    if (isset($_SESSION["USER"])) return true;
+    return false;
 }
 
 function query($query) {

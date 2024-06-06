@@ -27,20 +27,24 @@ function getUser($username) : ?object {
         WHERE username = :u
     ";
     $result = queryPrepared($query, ["u" => $username]);
-    if ($result)
+    if ($result) {
         return $result[0];
-    else
+    }
+    else {
         return null;
+    }
 }
 
-function logIn($username, $password) : ?object {
+function logIn($username, $password) : bool {
     $user = getUser($username);
     if (!$user) {
-        return null;
+        return false;
     }
     if (password_verify($password, $user->password)) {
         unset($user->password);
         unset($user->id);
-        return $_SERVER["USER"] = $user;
+        $_SESSION["USER"] = $user;
+        return true;
     }
+    return false;
 }

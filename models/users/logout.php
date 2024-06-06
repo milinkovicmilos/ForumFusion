@@ -3,9 +3,7 @@
 require_once("../../config/config.php");
 require_once("../common.php");
 
-if (isPost() || !isLoggedIn()) {
-    redirect("index");
+if (isLoggedIn()) {
+    unset($_SESSION["USER"]);
 }
-
-unset($_SERVER["USER"]);
-redirect("index.php");
+redirect("index");
