@@ -29,14 +29,61 @@ body {
     align-items: center;
 }
 
+.cnt-evenly {
+    justify-content: space-evenly;
+}
+
+.stretch {
+    align-items: stretch;
+}
+
 .end {
     margin-left: auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container {
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 1rem auto;
+    margin-bottom: 0;
+}
+
+input[type="submit"] { 
+    width: 50%;
+    cursor: pointer;
+}
+
+input:focus {
+    outline: none;
+}
+
+.err-text {
+    line-height: 0.8rem;
+    font-size: 0.8rem;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    color: darkred;
 }
 
 header {
     background-color: #333;
     color: #fff;
     height: var(--header-height);
+    margin-bottom: 1rem;
 }
 
 header .container {
@@ -107,4 +154,15 @@ section p {
 #banner {
     background-color: #f4f4f4;
     text-align: center;
+}
+
+.card {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    text-align: center;
+    padding: 1rem;
+}
+
+#login .card {
+    width: 33%;
 }
