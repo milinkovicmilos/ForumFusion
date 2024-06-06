@@ -5,6 +5,11 @@
                 <?= getFlash("REGISTER") ?>
             </div>
         <?php endif ?>
+        <?php if (checkFlash("LOGIN")): ?>
+            <div class="alert">
+                <?= getFlash("LOGIN") ?>
+            </div>
+        <?php endif ?>
         <?php if (checkFlash("USERNAME")): ?>
             <div class="alert">
                 <?= getFlash("USERNAME") ?>
