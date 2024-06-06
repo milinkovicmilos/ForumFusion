@@ -25,3 +25,16 @@ function redirect($pageName) {
 function isLoggedIn() : bool {
     return isset($_SERVER["USER"]);
 }
+
+function query($query) {
+    global $dbc;
+    $results = $dbc->query($query);
+    return $results->fetchAll();
+}
+
+function queryPrepared($query, $params) {
+    global $dbc;
+    $prepared = $dbc->prepare($query);
+    $prepared->execute($params);
+    return $prepared->fetchAll();
+}
