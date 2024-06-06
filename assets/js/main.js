@@ -34,7 +34,7 @@ formsForValidation.forEach(x => {
 });
 
 function validateForm(form) {
-    let inputs = form.querySelectorAll("input[type='text']");
+    let inputs = form.querySelectorAll("input[type='text'], input[type='password']");
     inputs.forEach(x => {
         x.addEventListener("blur", () => {
             validateFormElement(x);

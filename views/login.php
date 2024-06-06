@@ -1,5 +1,20 @@
 <main>
     <section id="login">
+        <?php if (checkFlash("REGISTER")): ?>
+            <div class="info">
+                <?= getFlash("REGISTER") ?>
+            </div>
+        <?php endif ?>
+        <?php if (checkFlash("USERNAME")): ?>
+            <div class="alert">
+                <?= getFlash("USERNAME") ?>
+            </div>
+        <?php endif ?>
+        <?php if (checkFlash("EMAIL")): ?>
+            <div class="alert">
+                <?= getFlash("EMAIL") ?>
+            </div>
+        <?php endif ?>
         <div class="container">
             <div class="flex-container cnt-evenly stretch">
                 <div class="card">

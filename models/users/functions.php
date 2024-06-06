@@ -35,6 +35,22 @@ function getUser($username) : ?object {
     }
 }
 
+function usernameEmailAvailable($username, $email) : array {
+    $queryUsername = "
+        SELECT id
+        FROM users
+        WHERE username = :u
+    ";
+    $usernameAvailable = queryPrepared($queryUsername, ["u" => $username]);
+    $queryEmail = "
+        SELECT id
+        FROM users
+        WHERE email = :e
+    ";
+    $emailAvailable = queryPrepared($queryEmail, ["e" => $email]);
+    return [empty($usernameAvailable), empty($emailAvailable)];
+}
+
 function logIn($username, $password) : bool {
     $user = getUser($username);
     if (!$user) {
@@ -47,4 +63,22 @@ function logIn($username, $password) : bool {
         return true;
     }
     return false;
+}
+
+function register($firstname, $lastname, $username, $email, $password) : bool {
+    $userRoleId = 2;
+    $password = password_hash($password, PASSWORD_DEFAULT);
+    $query = "
+        INSERT INTO users (first_name, last_name, username, email, password, role_id)
+        VALUES (:fn, :ln, :u, :e, :pw, :rid)
+    ";
+    $result = queryPrepared($query, [
+        "fn" => $firstname,
+        "ln" => $lastname,
+        "u" => $username,
+        "e" => $email,
+        "pw" => $password,
+        "rid" => $userRoleId
+    ]);
+    return empty($result);
 }
