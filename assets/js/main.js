@@ -30,6 +30,22 @@ const ErrorObjArr = [
         "errorText" : "This field is required.",
         "regex" : ".+",
         "maxlen" : Infinity
+    },
+    {
+        "elementIds" : ["forumname"],
+        "errorText" : "Forum name must start with capital letter. Max 50 characters.",
+        "regex" : "^[A-Z][a-z]*( [A-Z][a-z]*)*$",
+        "maxlen" : 50
+    },
+    {
+        "elementIds" : ["forumdescription"],
+        "errorText" : "This field is required. Max 250 characters.",
+        "regex" : ".+",
+        "maxlen" : 50
+    },
+    {
+        "elementIds" : ["forumcategory"],
+        "errorText" : "Please choose a category."
     }
 ];
 
@@ -39,18 +55,28 @@ formsForValidation.forEach(x => {
 });
 
 function validateForm(form) {
-    let inputs = form.querySelectorAll("input[type='text'], input[type='password']");
-    inputs.forEach(x => {
+    let textInputs = form.querySelectorAll("input[type='text'], input[type='password']");
+    textInputs.forEach(x => {
         x.addEventListener("blur", () => {
             validateFormElement(x);
+        });
+    });
+
+    let selects = form.querySelectorAll("select");
+    selects.forEach(x => {
+        x.addEventListener("change", () => {
+            validateSelect(x);
         });
     });
 
     let submitBtn = form.querySelector("input[type='submit']");
     submitBtn.addEventListener("click", e => {
         e.preventDefault();
-        inputs.forEach(x => {
+        textInputs.forEach(x => {
             validateFormElement(x);
+        });
+        selects.forEach(x => {
+            validateSelect(x);
         });
         let error = form.querySelector(".err-text");
         if (!error)
@@ -66,10 +92,22 @@ function validateFormElement(formElement) {
     }
     let inputErrorObj = findErrorObj(formElement);
     let regex = new RegExp(inputErrorObj["regex"]);
-    if (!regex.test(formElement.value) || formElement.value.length > inputErrorObj["maxlen"])
+    if (!regex.test(formElement.value) || formElement.value.length > inputErrorObj["maxlen"]) {
         setErrorText(formElement, inputErrorObj["errorText"]);
-    else
+    }
+    else {
         removeErrorText(formElement);
+    }
+}
+
+function validateSelect(formElement) {
+    let inputErrorObj = findErrorObj(formElement);
+    if (!parseInt(formElement.value)) {
+        setErrorText(formElement, inputErrorObj["errorText"]);
+    }
+    else {
+        removeErrorText(formElement);
+    }
 }
 
 function findErrorObj(inputElement) {
