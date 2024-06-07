@@ -3,28 +3,33 @@
 const ErrorObjArr = [
     {
         "elementIds": ["firstname", "lastname"],
-        "errorText": "This field is required and must start with capital letter.",
-        "regex": "^[A-Z][a-z]{2,}([A-Z][a-z]{2,})*$"
+        "errorText": "This field is required and must start with capital letter. Max 20 characters.",
+        "regex": "^[A-Z][a-z]{2,}( [A-Z][a-z]{2,})*$",
+        "maxlen" : 20
     },
     {
         "elementIds": ["username"],
-        "errorText": "This field is required and can only contain uppercase, lowercase letters and digits.",
-        "regex": "^[A-Za-z0-9][A-Za-z0-9]{2,20}$"
+        "errorText": "This field is required and can only contain uppercase, lowercase letters and digits. Max 20 characters.",
+        "regex": "^[A-Za-z0-9][A-Za-z0-9]{2,20}$",
+        "maxlen" : 20
     },
     {
         "elementIds": ["email"],
         "errorText": "Please enter correct e-mail address (e.g. johndoe@gmail.com).",
-        "regex": "^([a-z0-9]+\.?)+@[a-z]{2,}\.[a-z]{2,}$"
+        "regex": "^([a-z0-9]+\.?)+@[a-z]{2,}\.[a-z]{2,}$",
+        "maxlen" : Infinity
     },
     {
         "elementIds": ["password", "repassword"],
         "errorText": "Password must contain at least one uppercase and lowercase letter, one digit and min 8 characters.",
-        "regex": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$"
+        "regex": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$",
+        "maxlen" : Infinity
     },
     {
         "elementIds" : ["reqUsername", "reqPassword"],
         "errorText" : "This field is required.",
-        "regex" : ".+"
+        "regex" : ".+",
+        "maxlen" : Infinity
     }
 ];
 
@@ -61,7 +66,7 @@ function validateFormElement(formElement) {
     }
     let inputErrorObj = findErrorObj(formElement);
     let regex = new RegExp(inputErrorObj["regex"]);
-    if (!regex.test(formElement.value))
+    if (!regex.test(formElement.value) || formElement.value.length > inputErrorObj["maxlen"])
         setErrorText(formElement, inputErrorObj["errorText"]);
     else
         removeErrorText(formElement);
