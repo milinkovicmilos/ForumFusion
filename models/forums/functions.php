@@ -11,7 +11,11 @@ function forumInfo($forumId) {
         FROM forums
         WHERE id = :id
     ";
-    $forum = queryPrepared($query, ["id" => $forumId])[0];
+    $forum = queryPrepared($query, ["id" => $forumId]);
+    if (empty($forum)) {
+        return "<h2>Forum Not Found</h2>";
+    }
+    $forum = $forum[0];
     $html = "
         <h2>$forum->name</h2>
         <h3>$forum->description</h3>
