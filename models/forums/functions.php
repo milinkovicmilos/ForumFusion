@@ -5,6 +5,60 @@ define("FORUM_NAME_MAX", 50);
 define("FORUM_DESCRIPTION_REGEX", "/^.+$/");
 define("FORUM_DESCRIPTION_MAX", 250);
 
+function getPopularForums() {
+    $followsQuery = "
+        SELECT forum_id, Count(*) as count
+        FROM forum_follows
+        GROUP BY forum_id
+        ORDER BY count DESC
+        LIMIT 4
+    ";
+    $results = queryPrepared($followsQuery, []);
+    $forumIds = [];
+    foreach ($results as $result) {
+        $forumIds[] = $result->forum_id;
+    }
+    $forumIds = implode(", ", $forumIds);
+    $forumsQuery = "
+        SELECT name, description
+        FROM forums
+        WHERE id IN ($forumIds)
+    ";
+    return queryPrepared($forumsQuery, []);
+}
+
+function popularForums() {
+    $forums = getPopularForums();
+    $html = "";
+    foreach ($forums as $forum) {
+        $html .= "
+            <div class='index-item'>
+                <h3>$forum->name</h3>
+                <p>$forum->description</p>
+            </div>
+        ";
+    }
+    return $html;
+}
+
+function forumCategories() {
+    $query = "
+        SELECT name
+        FROM categories
+        LIMIT 4
+    ";
+    $categories = queryPrepared($query, []);
+    $html = "";
+    foreach ($categories as $category) {
+        $html .= "
+            <div class='index-item'>
+                <h3>$category->name</h3>
+            </div>
+        ";
+    }
+    return $html;
+}
+
 function categoryOptions() {
     $html = "";
     $results = queryAll("categories");

@@ -178,6 +178,7 @@ section {
 
 section h2 {
     text-align: center;
+    margin: 1rem 0;
 }
 
 section p {
@@ -198,4 +199,11 @@ section p {
 
 #login .card {
     width: 33%;
+}
+
+.index-item {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    padding: 1rem;
+    width: 22.5%;
 }
