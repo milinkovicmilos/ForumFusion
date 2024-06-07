@@ -4,16 +4,18 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-define("NAME_REGEX", "/^[A-Z][a-z]{2,}([A-Z][a-z]{2,})*$/");
+define("NAME_REGEX", "/^[A-Z][a-z]{2,}( [A-Z][a-z]{2,})*$/");
+define("MAX_NAME", 20);
 define("USERNAME_REGEX", "/^[A-Za-z0-9][A-Za-z0-9]{2,20}$/");
+define("MAX_USERNAME", 20);
 define("PASSWORD_REGEX", "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/");
 
 function validateName($name) : bool {
-    return preg_match(NAME_REGEX, $name);
+    return preg_match(NAME_REGEX, $name) && strlen($name) <= MAX_NAME;
 }
 
 function validateUsername($username) : bool {
-    return preg_match(USERNAME_REGEX, $username);
+    return preg_match(USERNAME_REGEX, $username) && strlen($username) <= MAX_USERNAME;
 }
 
 function validateEmail($email) : bool {
