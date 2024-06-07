@@ -1,6 +1,6 @@
+<?php include_once("models/forums/functions.php"); ?>
+<?php include_once("models/posts/functions.php"); ?>
 <main>
-    <?php include_once("models/forums/functions.php"); ?>
-    <?php include_once("models/posts/functions.php"); ?>
     <section id="info">
         <div class="container">
             <?= forumInfo($_GET["forumId"]); ?>
