@@ -31,6 +31,13 @@ function isLoggedIn() : bool {
     return false;
 }
 
+function getLoggedInUser() : ?object {
+    if (isLoggedIn()) {
+        return $_SESSION["USER"];
+    }
+    return null;
+}
+
 function setFlash($key, $value) : void { 
     $_SESSION["FLASH"][$key] = $value;
 }
@@ -56,6 +63,12 @@ function queryPrepared($query, $params) {
     $prepared = $dbc->prepare($query);
     $prepared->execute($params);
     return $prepared->fetchAll();
+}
+
+function queryAll($tableName) {
+    global $dbc;
+    $query = "SELECT * FROM $tableName";
+    return queryPrepared($query, []);
 }
 
 function executePrepared($query, $params) : bool { 

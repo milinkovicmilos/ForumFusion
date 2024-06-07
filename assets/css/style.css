@@ -80,6 +80,15 @@ input {
     margin-bottom: 0;
 }
 
+select {
+    width: 100%;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 1rem auto;
+    margin-bottom: 0;
+}
+
 input[type="submit"] { 
     width: 50%;
     cursor: pointer;
@@ -96,6 +105,11 @@ input:focus {
     padding: 0;
     text-align: left;
     color: darkred;
+}
+
+#cfform {
+    width: 60%;
+    margin: 0 auto;
 }
 
 header {

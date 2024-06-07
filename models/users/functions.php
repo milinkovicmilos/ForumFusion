@@ -64,7 +64,6 @@ function logIn($username, $password) : bool {
     }
     if (password_verify($password, $user->password)) {
         unset($user->password);
-        unset($user->id);
         $_SESSION["USER"] = $user;
         return true;
     }
