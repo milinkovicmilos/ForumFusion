@@ -5,6 +5,20 @@ define("FORUM_NAME_MAX", 50);
 define("FORUM_DESCRIPTION_REGEX", "/^.+$/");
 define("FORUM_DESCRIPTION_MAX", 250);
 
+function forumInfo($forumId) {
+    $query = "
+        SELECT name, description
+        FROM forums
+        WHERE id = :id
+    ";
+    $forum = queryPrepared($query, ["id" => $forumId])[0];
+    $html = "
+        <h2>$forum->name</h2>
+        <h3>$forum->description</h3>
+    ";
+    return $html;
+}
+
 function getPopularForums() {
     $followsQuery = "
         SELECT forum_id, Count(*) as count
@@ -20,7 +34,7 @@ function getPopularForums() {
     }
     $forumIds = implode(", ", $forumIds);
     $forumsQuery = "
-        SELECT name, description
+        SELECT id, name, description
         FROM forums
         WHERE id IN ($forumIds)
     ";
@@ -32,10 +46,12 @@ function popularForums() {
     $html = "";
     foreach ($forums as $forum) {
         $html .= "
-            <div class='index-item'>
-                <h3>$forum->name</h3>
-                <p>$forum->description</p>
-            </div>
+        <div class='index-item'>
+        <a class='reset-link' href='index.php?page=forum&forumId=$forum->id'>
+                    <h3>$forum->name</h3>
+                    <p>$forum->description</p>
+                    </a>
+                </div>
         ";
     }
     return $html;
