@@ -1,6 +1,6 @@
 <?php
 
-function getPosts($forumId) {
+function getPosts($forumId) : string {
     $query = "
         SELECT id, title, thumbnail, text
         FROM posts
@@ -28,4 +28,41 @@ function getPosts($forumId) {
         ";
     }
     return $html;
+}
+
+function getForumId($postId) : ?int {
+    $query = "
+        SELECT forum_id
+        FROM posts
+        WHERE id = :id
+    ";
+    $forumId = queryPrepared($query, ["id" => $postId]);
+    if (!empty($forumId)) {
+        return $forumId[0]->forum_id;
+    }
+    return null;
+}
+
+function showPost($postId) : string {
+    $query = "
+        SELECT image, title, text, username
+        FROM posts p INNER JOIN users u ON p.user_id = u.id
+        WHERE p.id = :id
+    ";
+    $results = queryPrepared($query, ["id" => $postId]);
+    if (empty($results)) {
+        return "";
+    }
+    $result = $results[0];
+    $text = processPostText($result->text);
+    return "
+        <img src='$result->image'>
+        <h3>$result->title</h3>
+        <p>$text</p>
+        <p>Post by : $result->username</p>
+    ";
+}
+
+function processPostText($text) : string {
+    return str_replace("\n", "<br>", $text);
 }

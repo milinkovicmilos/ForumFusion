@@ -8,6 +8,7 @@
 :root {
     --header-height: 60px;
     --footer-height: 60px;
+    --post-view-max-height: 300px;
     --post-max-heigth: 200px;
     --img-post-max-height: calc(var(--post-max-heigth) - 1rem);
 }
@@ -266,4 +267,15 @@ section p {
     -webkit-line-clamp: 4;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+section#post .container {
+    width: 50%;
+}
+
+section#post img {
+    display: block;
+    margin: 0 auto;
+    max-height: var(--post-view-max-height);
+    max-width: 100%;
 }
