@@ -20,7 +20,7 @@ function getPostComments($postId) : ?array {
             ) as liked
         FROM comments c INNER JOIN users u ON c.user_id = u.id
         WHERE post_id = :pid
-        ORDER BY c.last_mod DESC
+        ORDER BY like_count DESC, c.last_mod DESC
     ";
     return queryPrepared($query, [
         "pid" => $postId,
