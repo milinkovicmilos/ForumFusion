@@ -36,6 +36,11 @@ function respondJSON($data) : void {
     echo json_encode($data);
 }
 
+function responseCodeEnd($responseCode) : void {
+    http_response_code($responseCode);
+    exit();
+}
+
 function isLoggedIn() : bool {
     if (isset($_SESSION["USER"])) return true;
     return false;
