@@ -128,7 +128,8 @@ function loadComment(json) {
     let comment = document.createElement("div");
     comment.classList.add("comment");
     comment.innerHTML = html;
-    addLikeEventListener(comment.querySelector(".comment-like"));
+    let likeElement = comment.querySelector(".comment-like");
+    likeElement.addEventListener("click", likeEventListener);
     document.querySelector("#comments-container h2").after(comment);
 }
 
