@@ -46,6 +46,12 @@ const ErrorObjArr = [
     {
         "elementIds" : ["forumcategory"],
         "errorText" : "Please choose a category."
+    },
+    {
+        "elementIds" : ["comment-area"],
+        "errorText" : "Cannot submit empty comment. Max 1000 characters.",
+        "regex" : ".+",
+        "maxlen" : 1000
     }
 ];
 
@@ -55,33 +61,48 @@ formsForValidation.forEach(x => {
 });
 
 function validateForm(form) {
-    let textInputs = form.querySelectorAll("input[type='text'], input[type='password']");
+    let textInputs = form.querySelectorAll("textarea, input[type='text'], input[type='password']");
+    let selects = form.querySelectorAll("select");
+    attachEventListeners(textInputs, selects);
+
+    let submitBtn = form.querySelector("input[type='submit']");
+    submitBtn.addEventListener("click", e => {
+        e.preventDefault();
+        formErrors(form);
+    });
+}
+
+function attachEventListeners(textInputs, selects) {
     textInputs.forEach(x => {
         x.addEventListener("blur", () => {
             validateFormElement(x);
         });
     });
 
-    let selects = form.querySelectorAll("select");
     selects.forEach(x => {
         x.addEventListener("change", () => {
             validateSelect(x);
         });
     });
+}
 
-    let submitBtn = form.querySelector("input[type='submit']");
-    submitBtn.addEventListener("click", e => {
-        e.preventDefault();
-        textInputs.forEach(x => {
-            validateFormElement(x);
-        });
-        selects.forEach(x => {
-            validateSelect(x);
-        });
-        let error = form.querySelector(".err-text");
-        if (!error)
-            form.submit();
+function formErrors(form) {
+    let textInputs = form.querySelectorAll("textarea, input[type='text'], input[type='password']");
+    let selects = form.querySelectorAll("select");
+    textInputs.forEach(x => {
+        validateFormElement(x);
     });
+    selects.forEach(x => {
+        validateSelect(x);
+    });
+    let error = form.querySelector(".err-text");
+    if (!error) {
+        if (form.classList.contains("validate-send")) {
+            form.submit();
+        }
+        return true;
+    }
+    return false;
 }
 
 function validateFormElement(formElement) {
@@ -94,9 +115,11 @@ function validateFormElement(formElement) {
     let regex = new RegExp(inputErrorObj["regex"]);
     if (!regex.test(formElement.value) || formElement.value.length > inputErrorObj["maxlen"]) {
         setErrorText(formElement, inputErrorObj["errorText"]);
+        console.log("ERROR")
     }
     else {
         removeErrorText(formElement);
+        console.log("GOOD")
     }
 }
 
@@ -133,6 +156,22 @@ function removeErrorText(inputElement) {
     if (errText) {
         errText.remove();
     }
+}
+
+//#endregion
+
+//#region Async Functions
+
+async function post(url, data, follow = "manual") {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(data),
+        follow: follow
+    });
+    return response.json();
 }
 
 //#endregion
