@@ -106,7 +106,7 @@ function addComment($userId, $postId, $text) : ?int {
         global $dbc;
         return $dbc->lastInsertId();
     }
-    return NULL;
+    return null;
 }
 
 function likeComment($commentId) : bool { 
