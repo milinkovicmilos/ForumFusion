@@ -266,13 +266,12 @@ section p {
 .post-text-wrapper {
     width: 1%;
     flex-grow: 1;
-    padding-bottom: 1rem;
 }
 
 .post .post-info {
-    position: absolute;
     bottom: -0.5rem;
     left: 0;
+    width: 100%;
 }
 
 .post-info i {
