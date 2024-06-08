@@ -10,7 +10,7 @@
     --footer-height: 60px;
     --post-view-max-height: 300px;
     --post-max-heigth: 200px;
-    --img-post-max-height: calc(var(--post-max-heigth) - 1rem);
+    --img-post-max-height: calc(var(--post-max-heigth) - 4rem);
 }
 
 body {
@@ -246,6 +246,7 @@ section p {
 
 .post .flex-container {
     max-height: var(--post-max-heigth);
+    position: relative;
 }
 
 .post a {
@@ -265,6 +266,29 @@ section p {
 .post-text-wrapper {
     width: 1%;
     flex-grow: 1;
+    padding-bottom: 1rem;
+}
+
+.post .post-info {
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+}
+
+.post-info i {
+    padding-right: 0.5rem;
+}
+
+section#post .post-info i {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.post-author {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 1rem;
 }
 
 .clamp-text {

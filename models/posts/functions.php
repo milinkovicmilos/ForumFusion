@@ -1,18 +1,38 @@
 <?php
 
-function getPosts($forumId) : string {
+function getPosts($forumId) : ?array {
+    @$userId = getLoggedInUser()->id;
     $query = "
-        SELECT id, title, thumbnail, text
-        FROM posts
-        WHERE forum_id = :id
+        SELECT 
+            p.id, username, title, thumbnail, text,
+            (
+                SELECT Count(*)
+                FROM post_likes
+                WHERE post_id = p.id
+            ) as like_count,
+            (
+                SELECT Count(*)
+                FROM post_likes
+                WHERE post_id = p.id AND user_id = :uid
+            ) as liked
+        FROM posts p INNER JOIN users u ON p.user_id = u.id
+        WHERE p.forum_id = :fid
     ";
-    $results = queryPrepared($query, ["id" => $forumId]);
+    return queryPrepared($query, [
+        "fid" => $forumId,
+        "uid" => $userId
+    ]);
+}
+
+function showPosts($forumId) : string {
+    $results = getPosts($forumId);
+    if (empty($results)) {
+        return "<h3>There are no posts on this forum yet !</h3>";
+    }
     $html = "";
     foreach ($results as $result) {
-        $img = "";
-        if (isset($result->thumbnail)) {
-            $img = "<img src='$result->thumbnail'>";
-        }
+        $img = empty($result->thumbnail) ? "" : "<img src='$result->thumbnail'>";
+        $liked = (bool) $result->liked ? "fa-solid" : "fa-regular";
         $html .= "
             <div class='post'>
                 <a class='reset-link' href='index.php?page=post&postId=$result->id'>
@@ -22,6 +42,10 @@ function getPosts($forumId) : string {
                             <h3>$result->title</h3>
                             <p class='clamp-text'>$result->text</p>
                         </div>
+                        <span class='post-info'>
+                            <p class='post-author'>Post by : $result->username</p>
+                            <i class='$liked fa-thumbs-up'></i>$result->like_count
+                        </span>
                     </div>
                 </a>
             </div>
@@ -43,23 +67,67 @@ function getForumId($postId) : ?int {
     return null;
 }
 
-function showPost($postId) : string {
+function postExists($postId) : bool {
     $query = "
-        SELECT image, title, text, username
-        FROM posts p INNER JOIN users u ON p.user_id = u.id
-        WHERE p.id = :id
+        SELECT id
+        FROM posts
+        WHERE id = :pid
     ";
-    $results = queryPrepared($query, ["id" => $postId]);
+    $results = queryPrepared($query, ["pid" => $postId]);
+    return !empty($results);
+}
+
+function getPost($postId) : ?object {
+    @$userId = getLoggedInUser()->id;
+    $query = "
+        SELECT image, title, text, username,
+            (
+                SELECT Count(*)
+                FROM post_likes
+                WHERE post_id = p.id
+            ) as like_count,
+            (
+                SELECT Count(*)
+                FROM post_likes
+                WHERE post_id = p.id AND user_id = :uid
+            ) as liked
+        FROM posts p INNER JOIN users u ON p.user_id = u.id
+        WHERE p.id = :pid
+    ";
+    $results = queryPrepared($query, [
+        "pid" => $postId,
+        "uid" => $userId
+    ]);
     if (empty($results)) {
-        return "";
+        return null;
     }
-    $result = $results[0];
+    return $results[0];
+}
+
+function showPost($postId) : string {
+    $result = getPost($postId);
+    if (!$result) {
+        return "<h3>Post not found</h3>";
+    }
     $text = processText($result->text);
+    $iconStyle = (bool) $result->liked ? "fa-solid" : "fa-regular";
+    $liked = (bool) $result->liked ? "liked-post" : "";
+    $likeIcon = isLoggedIn() ? "
+        <i class='$liked $iconStyle fa-thumbs-up'></i>
+    " : "
+        <a class='reset-link-icon' href='index.php?page=login'>
+            <i class='$liked $iconStyle fa-thumbs-up'></i>
+        </a>
+    ";
     return "
         <img src='$result->image'>
         <h3>$result->title</h3>
         <p>$text</p>
-        <p>Post by : $result->username</p>
+        <span class='post-info'>
+            <p class='post-author'>Post by : $result->username</p>
+            $likeIcon
+            <span class='comment-like-count'>$result->like_count</span>
+        </span>
     ";
 }
 
@@ -70,8 +138,43 @@ function validatePostId($postId) : bool {
         WHERE id = :id
     ";
     $results = queryPrepared($query, ["id" => $postId]);
-    if (empty($results)) {
-        return false;
-    }
-    return true;
+    return !empty($results);
+}
+
+function isPostLiked($postId) : bool {
+    @$userId = getLoggedInUser()->id;
+    $query = "
+        SELECT post_id
+        FROM post_likes
+        WHERE post_id = :pid AND user_id = :uid
+    ";
+    $results = queryPrepared($query, [
+        "pid" => $postId,
+        "uid" => $userId
+    ]);
+    return !empty($results);
+}
+
+function likePost($postId) : bool {
+    @$userId = getLoggedInUser()->id;
+    $query = "
+        INSERT INTO post_likes (post_id, user_id)
+        VALUES (:pid, :uid)
+    ";
+    return executePrepared($query, [
+        "pid" => $postId,
+        "uid" => $userId
+    ]);
+}
+
+function unlikePost($postId) : bool {
+    @$userId = getLoggedInUser()->id;
+    $query = "
+        DELETE FROM post_likes
+        WHERE post_id = :pid AND user_id = :uid
+    ";
+    return executePrepared($query, [
+        "pid" => $postId,
+        "uid" => $userId
+    ]);
 }

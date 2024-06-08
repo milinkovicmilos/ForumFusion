@@ -1,6 +1,7 @@
 <?php include_once("models/forums/functions.php"); ?>
 <?php include_once("models/posts/functions.php"); ?>
 <?php include_once("models/comments/functions.php"); ?>
+<?php if (!postExists($_GET["postId"])) redirect("index"); ?>
 <main>
     <section id="forum-info">
         <div class="container">
