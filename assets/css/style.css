@@ -285,11 +285,6 @@ section#comments h2 {
     text-align: left;
 }
 
-section#comments .comment {
-    border-bottom: 1px solid #333;
-    border-radius: 3px;
-}
-
 section#comments .container {
     width: 50%;
 }
@@ -299,8 +294,12 @@ section#comments .comment-user {
 }
 
 section#comments p {
-    margin-top: 0;
+    margin: 0;
     padding-left: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-left: 1px solid #333;
+    border-bottom: 1px solid #333;
+    border-radius: 0 0 0 5px;
 }
 
 #comment-area {
