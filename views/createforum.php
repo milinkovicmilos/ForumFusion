@@ -1,3 +1,4 @@
+<?php if (!isLoggedIn()) redirect("login"); ?>
 <main>
     <section id="forum-creation">
         <div class="container">

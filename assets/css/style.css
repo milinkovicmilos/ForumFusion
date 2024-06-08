@@ -17,6 +17,7 @@ body {
     min-height: 100vh;
     position: relative;
     line-height: 1.5rem;
+    padding-bottom: var(--footer-height);
 }
 
 .alert {
@@ -278,4 +279,38 @@ section#post img {
     margin: 0 auto;
     max-height: var(--post-view-max-height);
     max-width: 100%;
+}
+
+section#comments h2 {
+    text-align: left;
+}
+
+section#comments .comment {
+    border-bottom: 1px solid #333;
+    border-radius: 3px;
+}
+
+section#comments .container {
+    width: 50%;
+}
+
+section#comments .comment-user {
+    font-weight: bold;
+}
+
+section#comments p {
+    margin-top: 0;
+    padding-left: 0.5rem;
+}
+
+#comment-area {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #333;
+    resize: none;
+    height: 150px;
+}
+
+#comment-area:focus {
+    outline: 1px solid #222;
 }

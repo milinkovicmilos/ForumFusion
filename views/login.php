@@ -1,3 +1,4 @@
+<?php if (isLoggedIn()) redirect("index"); ?>
 <main>
     <section id="login">
         <?php if (checkFlash("REGISTER")): ?>

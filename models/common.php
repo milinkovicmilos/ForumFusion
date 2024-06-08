@@ -91,3 +91,7 @@ function prepareMailer() : PHPMailer {
 
     return $mail;
 }
+
+function processText($text) : string {
+    return str_replace("\n", "<br>", $text);
+}

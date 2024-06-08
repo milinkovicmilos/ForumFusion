@@ -54,15 +54,11 @@ function showPost($postId) : string {
         return "";
     }
     $result = $results[0];
-    $text = processPostText($result->text);
+    $text = processText($result->text);
     return "
         <img src='$result->image'>
         <h3>$result->title</h3>
         <p>$text</p>
         <p>Post by : $result->username</p>
     ";
-}
-
-function processPostText($text) : string {
-    return str_replace("\n", "<br>", $text);
 }
