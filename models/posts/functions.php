@@ -62,3 +62,16 @@ function showPost($postId) : string {
         <p>Post by : $result->username</p>
     ";
 }
+
+function validatePostId($postId) : bool {
+    $query = "
+        SELECT id
+        FROM posts
+        WHERE id = :id
+    ";
+    $results = queryPrepared($query, ["id" => $postId]);
+    if (empty($results)) {
+        return false;
+    }
+    return true;
+}

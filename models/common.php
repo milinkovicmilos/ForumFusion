@@ -26,6 +26,16 @@ function redirect($pageName) {
     die;
 }
 
+function getJSON() { 
+    $data = json_decode(file_get_contents('php://input'));
+    return $data;
+}
+
+function respondJSON($data) : void {
+    header("Content-type: application/json");
+    echo json_encode($data);
+}
+
 function isLoggedIn() : bool {
     if (isset($_SESSION["USER"])) return true;
     return false;

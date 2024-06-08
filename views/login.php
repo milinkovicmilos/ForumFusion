@@ -25,7 +25,7 @@
             <div class="flex-container cnt-evenly stretch">
                 <div class="card">
                     <h2>Register</h2>
-                    <form action="models/users/register.php" method="POST" class="validate">
+                    <form action="models/users/register.php" method="POST" class="validate validate-send">
                         <div class="input-container">
                             <input type="text" name="firstname" id="firstname" placeholder="First Name">
                         </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="card">
                     <h2>Log In</h2>
-                    <form action="models/users/login.php" method="POST" class="validate">
+                    <form action="models/users/login.php" method="POST" class="validate validate-send">
                         <input type="text" name="username" id="reqUsername" placeholder="Username">
                         <input type="password" name="password" id="reqPassword" placeholder="Password">
                         <input type="submit" value="Log In">

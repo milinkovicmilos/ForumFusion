@@ -115,11 +115,9 @@ function validateFormElement(formElement) {
     let regex = new RegExp(inputErrorObj["regex"]);
     if (!regex.test(formElement.value) || formElement.value.length > inputErrorObj["maxlen"]) {
         setErrorText(formElement, inputErrorObj["errorText"]);
-        console.log("ERROR")
     }
     else {
         removeErrorText(formElement);
-        console.log("GOOD")
     }
 }
 
@@ -171,7 +169,34 @@ async function post(url, data, follow = "manual") {
         body: JSON.stringify(data),
         follow: follow
     });
-    return response.json();
+    return response;
+}
+
+//#endregion
+
+//#region Misc
+
+
+function showError(form, errorId, errorText) {
+    let error = document.querySelector(`#erorr-${errorId}`);
+    if (!error) {
+        let error = document.createElement("p");
+        error.classList.add("err-text");
+        error.id = `as-error-${errorId}`;
+        error.innerText = errorText;
+        form.append(error);
+    }
+}
+
+function removeError(form, errorId) { 
+    let error = form.querySelector(`#error-${errorId}`);
+    if (error) {
+        error.remove();
+    }
+}
+
+function processText(text) {
+    return text.replaceAll("\n", "<br>");
 }
 
 //#endregion
