@@ -36,7 +36,7 @@ function showPostComments($postId) : string {
     $html = "";
     foreach ($results as $result) { 
         $text = processText($result->text);
-        $liked = (bool) $result->liked ? "liked" : "";
+        $liked = (bool) $result->liked ? "liked-comment" : "";
         $thumbsUpStyle = (bool) $result->liked ? "fa-solid" : "fa-regular";
         $likeIcon = isLoggedIn() ? "
             <i id='cl-$result->id' class='comment-like $liked $thumbsUpStyle fa-thumbs-up'></i>

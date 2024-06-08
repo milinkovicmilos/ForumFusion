@@ -41,7 +41,7 @@ sendCommentBtn.addEventListener("click", e => {
 
 let commentLikes = document.querySelectorAll(".comment-like");
 commentLikes.forEach(x => {
-    if (x.classList.contains("liked")) {
+    if (x.classList.contains("liked-comment")) {
         x.addEventListener("click", unlikeEventListener);
     } else {
         x.addEventListener("click", likeEventListener);
