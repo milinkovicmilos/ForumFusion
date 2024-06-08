@@ -108,6 +108,16 @@ function validateCategory($categoryId) : bool {
     return false;
 }
 
+function forumExists($forumId) : bool {
+    $query = "
+        SELECT id
+        FROM forums
+        WHERE id = :fid
+    ";
+    $results = queryPrepared($query, ["fid" => $forumId]);
+    return !empty($results);
+}
+
 function addForum($name, $description, $category) : bool { 
     $userId = getLoggedInUser()->id;
     $query = "
