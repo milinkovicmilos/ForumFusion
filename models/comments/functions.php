@@ -11,7 +11,7 @@ function getPostComments($postId) : ?array {
             (
                 SELECT Count(*)
                 FROM comment_likes
-                WHERE post_id = :pid
+                WHERE comment_id = c.id
             ) as like_count,
             (
                 SELECT Count(*) as liked
