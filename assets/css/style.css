@@ -238,7 +238,7 @@ section#search form {
     align-items: end;
 }
 
-section#search form input, div {
+section#search form input, section#search form div {
     width: 20%;
     margin: 0;
 }
@@ -249,10 +249,12 @@ section#search select {
 
 #page-wrapper {
     margin: 0 auto;
+    width: 50%;
 }
 
 #page-wrapper > div {
     margin: 0 auto;
+    text-align: center;
 }
 
 .page-number {
@@ -369,6 +371,7 @@ section#comments .wrapper {
 section#comments .wrapper .comment-like {
     font-size: 1.2rem;
     padding: 0.5rem;
+    padding-left: 0rem;
     cursor: pointer;
 }
 
