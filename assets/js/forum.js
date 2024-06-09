@@ -80,6 +80,9 @@ function formPostsHtml(posts) {
 }
 
 function showPages(postCount) {
+    if (!postCount) {
+        return;
+    }
     let pageWrapper = document.createElement("div");
     pageWrapper.id = "page-wrapper";
     pageWrapper.append(makePageNumbers(postCount, currentPageNumber));
