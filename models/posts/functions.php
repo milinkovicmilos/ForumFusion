@@ -13,15 +13,21 @@ define("PERPAGE_MAP", [
     "3" => 15
 ]);
 
-function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber) : ?array {
+function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber, $filters) : ?array {
     @$userId = getLoggedInUser()->id;
     $search = strtolower($searchParam);
     $sort = SORT_MAP[$sortParam];
     $perPage = PERPAGE_MAP[$perPageParam];
     $offset = ($pageNumber - 1) * $perPage;
+    if (!empty($filters)) {
+        $filters = implode(", ", $filters);
+        $filters = "AND tag_id IN ($filters)";
+    } else {
+        $filters = "";
+    }
     $query = "
         SELECT 
-            p.id, username, title, thumbnail, text,
+            DISTINCT p.id, username, title, thumbnail, text,
             (
                 SELECT Count(*)
                 FROM post_likes
@@ -32,8 +38,13 @@ function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber
                 FROM post_likes
                 WHERE post_id = p.id AND user_id = :uid
             ) as liked
-        FROM posts p INNER JOIN users u ON p.user_id = u.id
-        WHERE p.forum_id = :fid AND p.active = 1 AND CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
+        FROM 
+            posts p INNER JOIN users u ON p.user_id = u.id
+            LEFT OUTER JOIN post_tags pt ON p.id = pt.post_id
+        WHERE 
+            p.forum_id = :fid AND p.active = 1 AND 
+            CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
+            $filters
         ORDER BY $sort
         LIMIT $perPage
         OFFSET $offset
@@ -45,12 +56,21 @@ function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber
     ]);
 }
 
-function postCount($forumId, $searchParam) {
+function postCount($forumId, $searchParam, $filters) {
     $search = strtolower($searchParam);
+    if (!empty($filters)) {
+        $filters = implode(", ", $filters);
+        $filters = "AND tag_id IN ($filters)";
+    } else {
+        $filters = "";
+    }
     $query = "
         SELECT Count(*) as count
-        FROM posts
-        WHERE forum_id = :fid AND active = 1 AND CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
+        FROM posts p LEFT OUTER JOIN post_tags pt ON p.id = pt.post_id
+        WHERE
+            p.forum_id = :fid AND p.active = 1 AND 
+            CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
+            $filters
     ";
     $results = queryPrepared($query, [
         "fid" => $forumId,

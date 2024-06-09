@@ -133,38 +133,21 @@ function addForum($name, $description, $category) : bool {
     return $result;
 }
 
-function generalTags() {
-    $query = "
-        SELECT name
-        FROM tags
-        WHERE category_id is NULL
-    ";
-    $results = queryPrepared($query, []);
-    $html = "<summary>General Tags</summary>";
-    foreach ($results as $result) {
-        $html .= "
-            <input type='checkbox' id='g-$result->name' name='g-$result->name'>
-            <label for='g-$result->name'>$result->name</label>
-            <br>
-        ";
-    }
-    return $html;
-}
-
 function forumTags($forumId) {
     $query = "
-        SELECT t.name
-        FROM forums f INNER JOIN tags t ON f.category_id = t.category_id
-        WHERE f.id = :fid
+        SELECT id, name
+        FROM tags t 
+        WHERE category_id is NULL OR category_id = (SELECT category_id FROM forums WHERE id = :fid);
     ";
     $results = queryPrepared($query, ["fid" => $forumId]);
-    $html = "<summary>Forum tags</summary>";
+    $html = "<summary>Forum tags</summary><div class='filters-container'>";
     foreach ($results as $result) {
         $html .= "
-            <input type='checkbox' id='f-$result->name' name='f-$result->name'>
+            <input type='checkbox' id='f-$result->name' value='filter-$result->id'>
             <label for='f-$result->name'>$result->name</label>
             <br>
         ";
     }
+    $html .= "</div>";
     return $html;
 }

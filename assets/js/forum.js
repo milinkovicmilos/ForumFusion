@@ -34,14 +34,28 @@ function getSearchParams() {
     let search = document.querySelector("section#search input[type='text']").value;
     let sort = document.querySelector("section#search #sort").value;
     let perPage = document.querySelector("section#search #perPage").value;
+    let filters = getFilters();
 
     return {
         "forumId": forumId,
         "search": search,
         "sort": sort,
         "perPage": perPage,
-        "pageNumber": currentPageNumber
+        "pageNumber": currentPageNumber,
+        "filters": filters
     };
+}
+
+function getFilters() {
+    let filters = document.querySelectorAll("#filters input[type='checkbox']");
+    let arr = [];
+    for (const element of filters) {
+        if (element.checked) {
+            let filterId = parseInt(element.value.split("-")[1]);
+            arr.push(filterId);
+        }
+    }
+    return arr;
 }
 
 function loadPosts(posts) {

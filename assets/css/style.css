@@ -248,14 +248,25 @@ section#search select {
 }
 
 section#search #filters { 
-    width: 100%;
+    width: 50%;
     display: flex;
+    align-self: start;
+    margin-top: 0.5rem;
 }
 
-section#search #filters > div { 
-    width: 50%;
+section#search details {
+    width: 100%;
+}
+
+section#search form .filters-container { 
+    width: 100%;
     margin: 0.5rem 0;
     cursor: pointer;
+}
+
+section#search input[type='submit'] {
+    align-self: start;
+    margin: 0.5rem 0;
 }
 
 #page-wrapper {

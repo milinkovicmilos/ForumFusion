@@ -40,14 +40,25 @@ if (!isset($data->pageNumber) || empty($data->pageNumber) || !is_numeric($data->
     responseCodeEnd(400);
 }
 
+if (isset($data->filters) && !empty($data->filters)) {
+    foreach ($data->filters as $filter) {
+        if (!is_numeric($filter)) {
+            http_response_code(400);
+        }
+    }
+} else {
+    $data->filters = [];
+}
+
 $posts = getPosts(
     $data->forumId, 
     $data->search, 
     $data->sort, 
     $data->perPage,
-    $data->pageNumber
+    $data->pageNumber,
+    $data->filters
 );
-$postCount = postCount($data->forumId, $data->search);
+$postCount = postCount($data->forumId, $data->search, $data->filters);
 $response = [
     "posts" => $posts,
     "postCount" => $postCount

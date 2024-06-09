@@ -29,16 +29,9 @@
                     </select>
                 </div>
                 <div id="filters">
-                    <div>
-                        <details>
-                            <?= generalTags(); ?>
-                        </details>
-                    </div>
-                    <div>
-                        <details>
-                            <?= forumTags($_GET["forumId"]); ?>
-                        </details>
-                    </div>
+                    <details>
+                        <?= forumTags($_GET["forumId"]); ?>
+                    </details>
                 </div>
                 <input type="submit" value="Search">
             </form>
