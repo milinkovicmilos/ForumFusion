@@ -36,5 +36,20 @@ if (!isset($data->perPage) || empty($data->perPage) ||
     responseCodeEnd(400);
 }
 
-$posts = getPosts($data->forumId, $data->search, $data->sort, $data->perPage);
-respondJSON($posts);
+if (!isset($data->pageNumber) || empty($data->pageNumber) || !is_numeric($data->perPage)) {
+    responseCodeEnd(400);
+}
+
+$posts = getPosts(
+    $data->forumId, 
+    $data->search, 
+    $data->sort, 
+    $data->perPage,
+    $data->pageNumber
+);
+$postCount = postCount($data->forumId, $data->search);
+$response = [
+    "posts" => $posts,
+    "postCount" => $postCount
+];
+respondJSON($response);

@@ -247,6 +247,19 @@ section#search select {
     margin: 0;
 }
 
+#page-wrapper {
+    margin: 0 auto;
+}
+
+#page-wrapper > div {
+    margin: 0 auto;
+}
+
+.page-number {
+    margin: 0 1rem;
+    cursor: pointer;
+}
+
 .post {
     width: 50%;
     margin: 1rem auto;

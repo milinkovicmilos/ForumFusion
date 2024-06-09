@@ -1,27 +1,31 @@
+let currentPageNumber = 1;
+
 fetchPosts();
 
 let searchButton = document.querySelector("section#search input[type='submit']");
 searchButton.addEventListener("click", e => {
     e.preventDefault();
+    currentPageNumber = 1;
     fetchPosts();
 });
 
-function fetchPosts() {
+async function fetchPosts() {
     let searchParams = getSearchParams();
-    let response = post(HOST + "/models/posts/getposts.php", searchParams);
-    response.then(x => {
-        switch (x.status) {
-            case 200:
-                x.json().then(
-                    json => loadPosts(json)
-                )
-                break;
-        
-            default:
-                showGetPostsError();
-                break;
-        }
-    });
+    let response = await post(HOST + "/models/posts/getposts.php", searchParams);
+    switch (response.status) {
+        case 200:
+            response.json().then(
+                json => {
+                    loadPosts(json["posts"]);
+                    showPages(json["postCount"]);
+                }
+            )
+            break;
+    
+        default:
+            showGetPostsError();
+            break;
+    }
 }
 
 function getSearchParams() {
@@ -35,7 +39,8 @@ function getSearchParams() {
         "forumId": forumId,
         "search": search,
         "sort": sort,
-        "perPage": perPage
+        "perPage": perPage,
+        "pageNumber": currentPageNumber
     };
 }
 
@@ -55,7 +60,7 @@ function formPostsHtml(posts) {
         let liked = Boolean(element["liked"]) ? "fa-solid" : "fa-regular";
         $html += `
             <div class='post'>
-                <a class='reset-link' href='index.php?page=post&postId=$result->id'>
+                <a class='reset-link' href='index.php?page=post&postId=${element["id"]}'>
                     <div class='flex-container cnt-between'>
                         ${img}
                         <div class='post-text-wrapper'>
@@ -72,6 +77,64 @@ function formPostsHtml(posts) {
         `;
     }
     return $html;
+}
+
+function showPages(postCount) {
+    let pageWrapper = document.createElement("div");
+    pageWrapper.id = "page-wrapper";
+    pageWrapper.append(makePageNumbers(postCount, currentPageNumber));
+    let postsWrapper = document.querySelector("section#posts");
+    postsWrapper.append(pageWrapper);
+}
+
+function makePageNumbers(postCount, currentPageNumber) { 
+    let wrapper = document.createElement("div");
+    let perPage = parseInt(document.querySelector("section#search #perPage").value);
+    let perPageObj = {
+        "1": 5,
+        "2": 10,
+        "3": 15
+    }
+    perPage = perPageObj[perPage];
+    let lastPageNumber = Math.ceil(postCount / perPage);
+    
+    if (currentPageNumber != 1) {
+        wrapper.append(previousPage());
+    }
+
+    let currentPage = document.createElement("span");
+    currentPage.innerText = currentPageNumber;
+    currentPage.classList.add("page-number");
+    currentPage.style = "font-weight: bold";
+    wrapper.append(currentPage);
+
+    if (currentPageNumber != lastPageNumber && currentPageNumber < lastPageNumber) {
+        wrapper.append(nextPage());
+    }
+
+    return wrapper;
+}
+
+function nextPage() {
+    let nextPage = document.createElement("span");
+    nextPage.classList.add("page-number");
+    nextPage.innerText = currentPageNumber + 1;
+    nextPage.addEventListener("click", () => {
+        currentPageNumber++;
+        fetchPosts();
+    });
+    return nextPage;
+}
+
+function previousPage() {
+    let previousPage = document.createElement("span");
+    previousPage.classList.add("page-number");
+    previousPage.innerText = currentPageNumber - 1;
+    previousPage.addEventListener("click", () => {
+        currentPageNumber--;
+        fetchPosts();
+    });
+    return previousPage;
 }
 
 function showGetPostsError() {

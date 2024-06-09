@@ -13,10 +13,12 @@ define("PERPAGE_MAP", [
     "3" => 15
 ]);
 
-function getPosts($forumId, $searchParam, $sortParam, $perPageParam) : ?array {
+function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber) : ?array {
     @$userId = getLoggedInUser()->id;
+    $search = strtolower($searchParam);
     $sort = SORT_MAP[$sortParam];
     $perPage = PERPAGE_MAP[$perPageParam];
+    $offset = ($pageNumber - 1) * $perPage;
     $query = "
         SELECT 
             p.id, username, title, thumbnail, text,
@@ -31,14 +33,30 @@ function getPosts($forumId, $searchParam, $sortParam, $perPageParam) : ?array {
                 WHERE post_id = p.id AND user_id = :uid
             ) as liked
         FROM posts p INNER JOIN users u ON p.user_id = u.id
-        WHERE p.forum_id = :fid
+        WHERE p.forum_id = :fid AND p.active = 1 AND CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
         ORDER BY $sort
         LIMIT $perPage
+        OFFSET $offset
     ";
     return queryPrepared($query, [
         "fid" => $forumId,
-        "uid" => $userId
+        "uid" => $userId,
+        "s" => $search
     ]);
+}
+
+function postCount($forumId, $searchParam) {
+    $search = strtolower($searchParam);
+    $query = "
+        SELECT Count(*) as count
+        FROM posts
+        WHERE forum_id = :fid AND active = 1 AND CONCAT(LOWER(title), LOWER(text)) LIKE CONCAT('%', :s, '%')
+    ";
+    $results = queryPrepared($query, [
+        "fid" => $forumId,
+        "s" => $search
+    ]);
+    return $results[0]->count;
 }
 
 function showPosts($forumId) : string {
