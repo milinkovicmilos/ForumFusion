@@ -84,6 +84,7 @@ function formPostsHtml(posts) {
                         <span class='post-info'>
                             <p class='post-author'>Post by : ${element["username"]}</p>
                             <i class='${liked} fa-thumbs-up'></i>${element["like_count"]}
+                            <span class='end'>${element["tags"] != null ? element["tags"] : ""}</span>
                         </span>
                     </div>
                 </a>

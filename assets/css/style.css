@@ -321,17 +321,13 @@ section#search input[type='submit'] {
     flex-grow: 1;
 }
 
-.post .post-info {
-    bottom: -0.5rem;
-    left: 0;
+.post-info {
     width: 100%;
+    display: flex;
 }
 
 .post-info i {
     padding-right: 0.5rem;
-}
-
-section#post .post-info i {
     font-size: 1.2rem;
     cursor: pointer;
 }

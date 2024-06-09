@@ -37,7 +37,12 @@ function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber
                 SELECT Count(*)
                 FROM post_likes
                 WHERE post_id = p.id AND user_id = :uid
-            ) as liked
+            ) as liked,
+            (
+                SELECT GROUP_CONCAT(CONCAT('#', t.name) SEPARATOR ', ')
+                FROM tags t
+                WHERE t.id IN (SELECT tag_id FROM post_tags WHERE post_id = p.id)
+            ) as tags
         FROM 
             posts p INNER JOIN users u ON p.user_id = u.id
             LEFT OUTER JOIN post_tags pt ON p.id = pt.post_id
@@ -145,7 +150,12 @@ function getPost($postId) : ?object {
                 SELECT Count(*)
                 FROM post_likes
                 WHERE post_id = p.id AND user_id = :uid
-            ) as liked
+            ) as liked,
+            (
+                SELECT GROUP_CONCAT(CONCAT('#', t.name) SEPARATOR ', ')
+                FROM tags t
+                WHERE t.id IN (SELECT tag_id FROM post_tags WHERE post_id = p.id)
+            ) as tags
         FROM posts p INNER JOIN users u ON p.user_id = u.id
         WHERE p.id = :pid
     ";
@@ -174,6 +184,7 @@ function showPost($postId) : string {
             <i class='$liked $iconStyle fa-thumbs-up'></i>
         </a>
     ";
+    $tags = isset($result->tags) ? "<span class='end'>$result->tags</span>" : "";
     return "
         <img src='$result->image'>
         <h3>$result->title</h3>
@@ -182,6 +193,7 @@ function showPost($postId) : string {
             <p class='post-author'>Post by : $result->username</p>
             $likeIcon
             <span class='comment-like-count'>$result->like_count</span>
+            $tags
         </span>
     ";
 }
