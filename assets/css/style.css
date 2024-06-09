@@ -232,6 +232,21 @@ section p {
     height: 100%;
 }
 
+section#search form {
+    width: 50%;
+    margin: 0 auto;
+    align-items: end;
+}
+
+section#search form input, div {
+    width: 20%;
+    margin: 0;
+}
+
+section#search select {
+    margin: 0;
+}
+
 .post {
     width: 50%;
     margin: 1rem auto;
@@ -255,6 +270,7 @@ section p {
 
 .post h3 {
     text-align: left;
+    margin-top: 0;
 }
 
 .post img {

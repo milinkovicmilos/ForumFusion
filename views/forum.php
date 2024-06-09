@@ -7,9 +7,32 @@
             <?= forumInfo($_GET["forumId"]); ?>
         </div>
     </section>
-    <section id="posts">
+    <section id="search">
         <div class="container">
-            <?= showPosts($_GET["forumId"]); ?>
+            <form class="flex-container cnt-between">
+                <input type="text" name="search" id="" placeholder="Search...">
+                <div>
+                    <label for="sort">Sort By :</label>
+                    <select name="sort" id="sort">
+                        <option value="1">Newest</option>
+                        <option value="2">Oldest</option>
+                        <option value="3">Most Liked</option>
+                        <option value="4">Least Liked</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="perPage">Per page</label>
+                    <select name="perPage" id="perPage">
+                        <option value="1">5</option>
+                        <option value="2">10</option>
+                        <option value="3">15</option>
+                    </select>
+                </div>
+                <input type="submit" value="Search">
+            </form>
         </div>
+    </section>
+    <section id="posts">
+        <div class="container"></div>
     </section>
 </main>

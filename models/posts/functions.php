@@ -1,7 +1,22 @@
 <?php
 
-function getPosts($forumId) : ?array {
+define("SORT_MAP", [
+    "1" => "p.last_mod DESC",
+    "2" => "p.last_mod ASC",
+    "3" => "like_count DESC",
+    "4" => "like_count ASC"
+]);
+
+define("PERPAGE_MAP", [
+    "1" => 5,
+    "2" => 10,
+    "3" => 15
+]);
+
+function getPosts($forumId, $searchParam, $sortParam, $perPageParam) : ?array {
     @$userId = getLoggedInUser()->id;
+    $sort = SORT_MAP[$sortParam];
+    $perPage = PERPAGE_MAP[$perPageParam];
     $query = "
         SELECT 
             p.id, username, title, thumbnail, text,
@@ -17,6 +32,8 @@ function getPosts($forumId) : ?array {
             ) as liked
         FROM posts p INNER JOIN users u ON p.user_id = u.id
         WHERE p.forum_id = :fid
+        ORDER BY $sort
+        LIMIT $perPage
     ";
     return queryPrepared($query, [
         "fid" => $forumId,
