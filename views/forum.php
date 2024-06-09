@@ -28,6 +28,18 @@
                         <option value="3">15</option>
                     </select>
                 </div>
+                <div id="filters">
+                    <div>
+                        <details>
+                            <?= generalTags(); ?>
+                        </details>
+                    </div>
+                    <div>
+                        <details>
+                            <?= forumTags($_GET["forumId"]); ?>
+                        </details>
+                    </div>
+                </div>
                 <input type="submit" value="Search">
             </form>
         </div>
