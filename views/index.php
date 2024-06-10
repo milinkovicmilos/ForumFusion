@@ -1,3 +1,5 @@
+<?php include_once("models/forums/functions.php"); ?>
+<?php include_once("models/categories/functions.php"); ?>
 <main>
     <section id="banner">
         <?php if (checkFlash("FORUM")) : ?>
@@ -11,7 +13,6 @@
             <a href="index.php?page=createforum" class="button">Create a Forum</a>
         </div>
     </section>
-    <?php include_once("models/forums/functions.php"); ?>
     <section id="popular">
         <h2>Popular Forums</h2>
         <div class="container">

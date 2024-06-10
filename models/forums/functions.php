@@ -50,30 +50,40 @@ function popularForums() {
     $html = "";
     foreach ($forums as $forum) {
         $html .= "
-        <div class='index-item'>
-        <a class='reset-link' href='index.php?page=forum&forumId=$forum->id'>
+            <div class='index-item'>
+                <a class='reset-link' href='index.php?page=forum&forumId=$forum->id'>
                     <h3>$forum->name</h3>
                     <p>$forum->description</p>
-                    </a>
-                </div>
+                </a>
+            </div>
         ";
     }
     return $html;
 }
 
-function forumCategories() {
+function getForumsInCategory($categoryId) : ?array {
     $query = "
-        SELECT name
-        FROM categories
-        LIMIT 4
+        SELECT id, name, description
+        FROM forums
+        WHERE category_id = :cid
     ";
-    $categories = queryPrepared($query, []);
+    return queryPrepared($query, ["cid" => $categoryId]);
+}
+
+function showForumsInCategory($categoryId) : string {
+    $forums = getForumsInCategory($categoryId);
+    if (empty($forums)) {
+        return "<h3>There are no posts in this forum yet !</h3>";
+    }
     $html = "";
-    foreach ($categories as $category) {
+    foreach ($forums as $forum) {
         $html .= "
-            <div class='index-item'>
-                <h3>$category->name</h3>
-            </div>
+            <a class='reset-link' href='index.php?page=forum&forumId=$forum->id'>
+                <div>
+                    <h3>$forum->name</h3>
+                    <p>$forum->description</p>
+                </div>
+            </a>
         ";
     }
     return $html;
