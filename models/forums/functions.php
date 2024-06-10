@@ -1,6 +1,6 @@
 <?php
 
-define("FORUM_NAME_REGEX", "/^[A-Z][a-z]*( [A-Z][a-z]*)*$/");
+define("FORUM_NAME_REGEX", "/^[a-z]*( [a-z]*)*$/");
 define("FORUM_NAME_MAX", 50);
 define("FORUM_DESCRIPTION_REGEX", "/^.+$/");
 define("FORUM_DESCRIPTION_MAX", 250);
@@ -128,7 +128,22 @@ function forumExists($forumId) : bool {
     return !empty($results);
 }
 
+function forumNameExists($forumName) : bool {
+    $query = "
+        SELECT id
+        FROM forums
+        WHERE name = :fn
+    ";
+    $results = queryPrepared($query, ["fn" => $forumName]);
+    return !empty($results);
+}
+
 function addForum($name, $description, $category) : bool { 
+    $name = strtolower($name);
+    if (forumNameExists($name)) {
+        setFlash("FORUM", "Forum with provided name already exists!");
+        redirect("createforum");
+    }
     $userId = getLoggedInUser()->id;
     $query = "
         INSERT INTO forums (name, description, category_id, user_id)

@@ -33,8 +33,8 @@ const ErrorObjArr = [
     },
     {
         "elementIds" : ["forumname"],
-        "errorText" : "Forum name must start with capital letter. Max 50 characters.",
-        "regex" : "^[A-Z][a-z]*( [A-Z][a-z]*)*$",
+        "errorText" : "Only lowercase letters. Max 50 characters.",
+        "regex" : "^[a-z]*( [a-z]*)*$",
         "maxlen" : 50
     },
     {

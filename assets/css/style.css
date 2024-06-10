@@ -73,6 +73,10 @@ body {
     margin-left: auto;
 }
 
+.start {
+    margin-right: auto;
+}
+
 .reset-link {
     color: inherit;
     text-decoration: inherit;
@@ -245,11 +249,14 @@ section#forums h3 {
 
 section#forums .flex-container {
     align-items: stretch;
+    width: 80%;
+    margin: 0 auto;
 }
 
 section#forums a {
-    width: 30%;
+    width: 45%;
     padding: 1rem;
+    margin-bottom: 1rem;
     background-color: #f4f4f4;
     border-radius: 5px;
 }
