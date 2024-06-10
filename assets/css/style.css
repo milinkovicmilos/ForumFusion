@@ -237,6 +237,10 @@ section p {
     height: 100%;
 }
 
+section#forum-info {
+    text-align: center;
+}
+
 section#search form {
     width: 50%;
     margin: 0 auto;

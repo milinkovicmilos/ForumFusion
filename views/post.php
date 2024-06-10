@@ -5,7 +5,9 @@
 <main>
     <section id="forum-info">
         <div class="container">
-            <?= forumInfo(getForumId($_GET["postId"])); ?>
+            <?php $forumId = getForumId($_GET["postId"]); ?>
+            <?= forumInfo($forumId); ?>
+            <a class='button' href='index.php?page=forum&forumId=<?= $forumId ?>'>Back</a>
         </div>
     </section>
     <section id="post">
