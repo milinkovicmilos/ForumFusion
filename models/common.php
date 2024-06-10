@@ -111,3 +111,15 @@ function prepareMailer() : PHPMailer {
 function processText($text) : string {
     return str_replace("\n", "<br>", $text);
 }
+
+function logPageAccess($pageName, $id = "") : void {
+    if (!empty($id)) {
+        $pageName = $pageName . PAGE_ID_SEPARATOR . $id;
+    }
+    $username = getLoggedInUser() ? getLoggedInUser()->username : "guest";
+    $datetime = date("Y-m-d H:i:s");
+    $handle = fopen(PAGE_ACCESS_LOG_PATH, "a");
+    $output = $username . LOG_SEPARATOR . $pageName . LOG_SEPARATOR . $datetime . "\n";
+    fwrite($handle, $output);
+    fclose($handle);
+}
