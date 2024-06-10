@@ -84,36 +84,6 @@ function postCount($forumId, $searchParam, $filters) {
     return $results[0]->count;
 }
 
-function showPosts($forumId) : string {
-    $results = getPosts($forumId);
-    if (empty($results)) {
-        return "<h3>There are no posts on this forum yet !</h3>";
-    }
-    $html = "";
-    foreach ($results as $result) {
-        $img = empty($result->thumbnail) ? "" : "<img src='$result->thumbnail'>";
-        $liked = (bool) $result->liked ? "fa-solid" : "fa-regular";
-        $html .= "
-            <div class='post'>
-                <a class='reset-link' href='index.php?page=post&postId=$result->id'>
-                    <div class='flex-container cnt-between'>
-                        $img
-                        <div class='post-text-wrapper'>
-                            <h3>$result->title</h3>
-                            <p class='clamp-text'>$result->text</p>
-                        </div>
-                        <span class='post-info'>
-                            <p class='post-author'>Post by : $result->username</p>
-                            <i class='$liked fa-thumbs-up'></i>$result->like_count
-                        </span>
-                    </div>
-                </a>
-            </div>
-        ";
-    }
-    return $html;
-}
-
 function getForumId($postId) : ?int {
     $query = "
         SELECT forum_id
