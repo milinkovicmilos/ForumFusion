@@ -27,7 +27,7 @@ function getPosts($forumId, $searchParam, $sortParam, $perPageParam, $pageNumber
     }
     $query = "
         SELECT 
-            DISTINCT p.id, username, title, thumbnail, text,
+            DISTINCT p.id, username, title, image, text,
             (
                 SELECT Count(*)
                 FROM post_likes
@@ -144,6 +144,7 @@ function showPost($postId) : string {
     if (!$result) {
         return "<h3>Post not found</h3>";
     }
+    $image = isset($result->image) ? "data/img/$result->image" : "";
     $text = processText($result->text);
     $iconStyle = (bool) $result->liked ? "fa-solid" : "fa-regular";
     $liked = (bool) $result->liked ? "liked-post" : "";
@@ -156,7 +157,7 @@ function showPost($postId) : string {
     ";
     $tags = isset($result->tags) ? "<span class='end'>$result->tags</span>" : "";
     return "
-        <img src='$result->image'>
+        <img src='$image'>
         <h3>$result->title</h3>
         <p>$text</p>
         <span class='post-info'>
@@ -166,6 +167,133 @@ function showPost($postId) : string {
             $tags
         </span>
     ";
+}
+
+function handlePostImage($filePath) : string {
+    list($widthOriginal, $heightOriginal) = getimagesize($filePath);
+
+    $ratioOrignal = $widthOriginal / $heightOriginal;
+
+    $heightScaled = 300;
+    $widthScaled = $heightScaled * $ratioOrignal;
+
+    if (mime_content_type($filePath) == "image/png") {
+        $original = imagecreatefrompng($filePath);
+    } else {
+        $original = imagecreatefromjpeg($filePath);
+    }
+
+    $scaled = imagecreatetruecolor($widthScaled, $heightScaled);
+    $alpha = imagecolorallocatealpha($scaled, 0, 0, 0, 127); 
+    imagecolortransparent($scaled, $alpha); 
+    imagefill($scaled, 0, 0, $alpha);
+    imagesavealpha($scaled, true);
+    imagecopyresampled($scaled, $original, 0, 0, 0, 0, $widthScaled, $heightScaled, $widthOriginal, $heightOriginal);
+
+    $thumbnailSize = 150;
+    $start_x = 0;
+    $start_y = 0;
+
+    if ($widthScaled > $heightScaled) {
+        $ratioThumbnail = $heightScaled / $widthScaled;
+        $heightThumbnail = $thumbnailSize * $ratioThumbnail;
+
+        $widthThumbnail = $thumbnailSize;
+        $start_y = ($thumbnailSize - $heightThumbnail) / 2;
+    } else {
+        $ratioThumbnail = $widthScaled / $heightScaled;
+        $widthThumbnail = $thumbnailSize * $ratioThumbnail;
+
+        $heightThumbnail = $thumbnailSize;
+        $start_x = ($thumbnailSize - $widthThumbnail) / 2;
+    }
+
+
+    $thumbnail = imagecreatetruecolor($thumbnailSize, $thumbnailSize);
+    $alpha = imagecolorallocatealpha($thumbnail, 0, 0, 0, 127);
+    imagecolortransparent($thumbnail, $alpha);
+    imagefill($thumbnail, 0, 0, $alpha);
+    imagesavealpha($thumbnail, true);
+    imagecopyresampled($thumbnail, $scaled, $start_x, $start_y, 0, 0, $widthThumbnail, $heightThumbnail, $widthScaled, $heightScaled);
+
+    $imgName = time() . md5($filePath) . ".png";
+    $imgPath = DATA_DIR . "/img/" . $imgName;
+    $thumbnailPath = DATA_DIR . "/img/thumbnail/" . $imgName;
+    imagepng($scaled, $imgPath);
+    imagepng($thumbnail, $thumbnailPath);
+
+    imagedestroy($original);
+    imagedestroy($scaled);
+    imagedestroy($thumbnail);
+
+    return $imgName;
+}
+
+function addPost($forumId, $title, $text, $image, $tags) : int {
+    $userId = getLoggedInUser()->id;
+    $image = isset($image) && !empty($image) ? $image : null;
+    $query = "
+        INSERT INTO posts (title, image, text, forum_id, user_id)
+        VALUES (:t, :i, :txt, :fid, :uid)
+    ";
+    executePrepared($query, [
+        "fid" => $forumId,
+        "t" => $title,
+        "txt" => $text,
+        "i" => $image,
+        "uid" => $userId
+    ]);
+    global $dbc;
+    $postId = $dbc->lastInsertId();
+    if (isset($tags) && !empty($tags)) {
+        addPostTags($postId, $tags);
+    }
+    return $postId;
+}
+
+function addPostTags($postId, $tags) : void {
+    $query = "";
+    foreach ($tags as $tag) {
+        $tag = (int) explode("-", $tag)[1];
+        $query .= "
+            INSERT INTO post_tags (post_id, tag_id)
+            VALUES ($postId, $tag);
+        ";
+
+    }
+    executePrepared($query, []);
+}
+
+define("POST_TITLE_REGEX", "/.+/");
+define("POST_TITLE_MAX", 250);
+function validatePostTitle($title) : bool {
+    return preg_match(POST_TITLE_REGEX, $title) && strlen($title) <= POST_TITLE_MAX;
+}
+
+define("POST_TEXT_REGEX", "/.+/");
+define("POST_TEXT_MAX", 2000);
+function validatePostText($text) : bool {
+    return preg_match(POST_TEXT_REGEX, $text) && strlen($text) <= POST_TEXT_MAX;
+}
+
+function validatePostTags($tags, $forumId) : bool {
+    $query = "
+        SELECT id
+        FROM tags t 
+        WHERE category_id is NULL OR category_id = (SELECT category_id FROM forums WHERE id = :fid);
+    ";
+    $results = queryPrepared($query, ["fid" => $forumId]);
+    $tagIds = [];
+    foreach ($results as $result) {
+        $tagIds[] = $result->id;
+    }
+    foreach ($tags as $tag) {
+        $tag = (int) explode("-", $tag)[1];
+        if (!in_array($tag, $tagIds)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function validatePostId($postId) : bool {

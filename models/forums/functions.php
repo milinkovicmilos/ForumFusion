@@ -143,7 +143,7 @@ function forumTags($forumId) {
     $html = "<summary>Forum tags</summary><div class='filters-container'>";
     foreach ($results as $result) {
         $html .= "
-            <input type='checkbox' id='f-$result->name' value='filter-$result->id'>
+            <input type='checkbox' id='f-$result->name' name='tag[]' value='filter-$result->id'>
             <label for='f-$result->name'>$result->name</label>
             <br>
         ";

@@ -39,6 +39,11 @@ body {
     border-radius: 5px;
 }
 
+#add-post {
+    padding: 0;
+    text-align: center;
+}
+
 .container {
     width: 80%;
     margin: 0px auto;
@@ -403,4 +408,45 @@ section#comments .wrapper .comment-like {
 
 #comment-area:focus {
     outline: 1px solid #222;
+}
+
+section#post-form form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+section#post-form input[type='text'], section#post-form textarea {
+    margin: 0.5rem 0;
+}
+
+section#post-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    resize: none;
+    height: 150px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+section#post-form textarea:focus {
+    outline: 1px solid #222;
+}
+
+section#post-form input[type='file'] {
+    margin-bottom: 1rem;
+}
+
+section#post-form details {
+    width: 50%;
+    margin: 0.5rem auto;
+}
+
+section#post-form details .filters-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+section#post-form input[type='checkbox'] {
+    width: auto;
 }

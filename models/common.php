@@ -20,8 +20,9 @@ function isPost() {
     return $_SERVER["REQUEST_METHOD"] == "POST";
 }
 
-function redirect($pageName) {
-    $url = BASE_HOST . "/index.php?page=" . $pageName;
+function redirect($pageName, $params = "") {
+    $params = !empty($params) ? "&$params" : "";
+    $url = BASE_HOST . "/index.php?page=" . $pageName . $params;
     header("Location: $url");
     die;
 }

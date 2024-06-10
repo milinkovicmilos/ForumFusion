@@ -52,6 +52,23 @@ const ErrorObjArr = [
         "errorText" : "Cannot submit empty comment. Max 1000 characters.",
         "regex" : ".+",
         "maxlen" : 1000
+    },
+    {
+        "elementIds": ["post-title"],
+        "errorText": "Title is required. Max 250 characters",
+        "regex": ".+",
+        "maxlen": 250
+    },
+    {
+        "elementIds": ["post-text"],
+        "errorText": "Text required. Max 2000 characters",
+        "regex": ".+",
+        "maxlen": 2000
+    },
+    {
+        "elementIds": ["post-image"],
+        "errorText": "Invalid file format. Only .jpg and .png image files are allowed.",
+        "validFormats": ["image/jpeg", "image/png"]
     }
 ];
 
@@ -63,7 +80,8 @@ formsForValidation.forEach(x => {
 function validateForm(form) {
     let textInputs = form.querySelectorAll("textarea, input[type='text'], input[type='password']");
     let selects = form.querySelectorAll("select");
-    attachEventListeners(textInputs, selects);
+    let files = form.querySelectorAll("input[type='file']");
+    attachEventListeners(textInputs, selects, files);
 
     let submitBtn = form.querySelector("input[type='submit']");
     submitBtn.addEventListener("click", e => {
@@ -72,7 +90,7 @@ function validateForm(form) {
     });
 }
 
-function attachEventListeners(textInputs, selects) {
+function attachEventListeners(textInputs, selects, files) {
     textInputs.forEach(x => {
         x.addEventListener("blur", () => {
             validateFormElement(x);
@@ -84,16 +102,26 @@ function attachEventListeners(textInputs, selects) {
             validateSelect(x);
         });
     });
+
+    files.forEach(x => {
+        x.addEventListener("change", () => {
+            validateFile(x);
+        });
+    });
 }
 
 function formErrors(form) {
     let textInputs = form.querySelectorAll("textarea, input[type='text'], input[type='password']");
     let selects = form.querySelectorAll("select");
+    let files = form.querySelectorAll("input[type='file']");
     textInputs.forEach(x => {
         validateFormElement(x);
     });
     selects.forEach(x => {
         validateSelect(x);
+    });
+    files.forEach(x => {
+        validateFile(x);
     });
     let error = form.querySelector(".err-text");
     if (!error) {
@@ -124,6 +152,19 @@ function validateFormElement(formElement) {
 function validateSelect(formElement) {
     let inputErrorObj = findErrorObj(formElement);
     if (!parseInt(formElement.value)) {
+        setErrorText(formElement, inputErrorObj["errorText"]);
+    }
+    else {
+        removeErrorText(formElement);
+    }
+}
+
+function validateFile(formElement) {
+    let inputErrorObj = findErrorObj(formElement);
+    if (!formElement.files[0]) {
+        return true;
+    }
+    if (!inputErrorObj["validFormats"].includes(formElement.files[0].type)) {
         setErrorText(formElement, inputErrorObj["errorText"]);
     }
     else {

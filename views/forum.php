@@ -7,6 +7,11 @@
             <?= forumInfo($_GET["forumId"]); ?>
         </div>
     </section>
+    <section id="add-post">
+        <a href="index.php?page=createpost&forumId=<?= $_GET["forumId"] ?>" class="button">
+            Add new post
+        </a>
+    </section>
     <section id="search">
         <div class="container">
             <form class="flex-container cnt-between">

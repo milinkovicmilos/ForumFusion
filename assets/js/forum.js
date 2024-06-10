@@ -70,7 +70,7 @@ function formPostsHtml(posts) {
     }
     $html = "";
     for (const element of posts) {
-        let img = Boolean(element["thumbnail"]) ? `<img src='${element["thumbnail"]}'>` : "";
+        let img = Boolean(element["image"]) ? `<img src='data/img/thumbnail/${element["image"]}'>` : "";
         let liked = Boolean(element["liked"]) ? "fa-solid" : "fa-regular";
         $html += `
             <div class='post'>
