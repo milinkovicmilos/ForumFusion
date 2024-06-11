@@ -20,6 +20,20 @@ function isPost() {
     return $_SERVER["REQUEST_METHOD"] == "POST";
 }
 
+function includePage($pageName, $viewsPathArr) : void {
+    $pageArr = ["forum", "category", "post"];
+    foreach ($viewsPathArr as $viewPath) {
+        if (file_exists($viewPath . $pageName . ".php")) {
+            include_once($viewPath . $pageName . ".php");
+            if (in_array($pageName, $pageArr)) {
+                logPageAccess($pageName, $_GET[$pageName . "Id"]);
+            } else {
+                logPageAccess($pageName);
+            }
+        }
+    }
+}
+
 function redirect($pageName, $params = "") {
     $params = !empty($params) ? "&$params" : "";
     $url = BASE_HOST . "/index.php?page=" . $pageName . $params;
@@ -52,6 +66,10 @@ function getLoggedInUser() : ?object {
         return $_SESSION["USER"];
     }
     return null;
+}
+
+function isAdmin() : bool {
+    return isLoggedIn() && getLoggedInUser()->role_id == 1;
 }
 
 function setFlash($key, $value) : void { 
