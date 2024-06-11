@@ -1,9 +1,6 @@
 # Data folder
 /data/
 
-# Admin data
-/admin/data/
-
 # ENV files
 *.env
 
