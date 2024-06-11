@@ -7,6 +7,9 @@
                 <li><a href="#" class="nav-link">My Forums</a></li>
                 <li><a href="#" class="nav-link">Notifications</a></li>
                 <?php if (isLoggedIn()): ?>
+                    <?php if (isAdmin()): ?>
+                        <a href="index.php?page=admin" class="nav-link">Admin</a>
+                    <?php endif ?>
                     <li class="end">
                         <?= $_SESSION["USER"]->first_name . " " . $_SESSION["USER"]->last_name . " >> "?>
                         <a href="models/users/logout.php" class="nav-link">Log Out</a>

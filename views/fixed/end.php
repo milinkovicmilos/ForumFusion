@@ -7,5 +7,8 @@
         <script src="assets/js/comments.js"></script>
         <script src="assets/js/post.js"></script>
     <?php endif ?>
+    <?php if ($page == "admin" && isAdmin()): ?>
+        <script src="assets/admin/admin.js"></script>
+    <?php endif ?>
 </body>
 </html>
